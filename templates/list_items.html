@@ -27,6 +27,7 @@
                     <th>CATEGORY</th>
                     <th>ITEM NAME</th>
                     <th>QUANTITY IN STORE</th>
+                    <th>REORDER</th>
                     <th>ADDED ON</th>
                     <th>LAST UPDATE</th>
                     <th>DETAIL</th>
@@ -38,7 +39,13 @@
                     <td>{{forloop.counter}}</td>
                     <td>{{instance.category}}</td>
                     <td><a href="{% url 'update_items' instance.id %}">{{instance.item_name}}</a></td>
-                    <td>{{instance.quantity}}</td>
+                    <td>  {% if instance.quantity <= instance.reorder_level %}
+                            <div style="background-color: orange;">{{instance.quantity}}</div>
+                          {% else %}
+                                {{instance.quantity}}
+                          {% endif %}
+                    </td>
+                      <td><a href="{% url 'reorder_level' instance.id %}">{{instance.reorder_level}}</a></td>
                     <td>{{instance.timestamp|date:"d M "}}</td>
                     <td>{{instance.last_updated|date:"d M - h i a"}}</td>
                       <td><a href="{% url 'stock_detail' instance.id %}"><i class="fas fa-info-circle"></i></a></td>

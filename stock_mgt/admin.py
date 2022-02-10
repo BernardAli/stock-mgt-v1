@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .form import StockCreateForm
+from .forms import StockCreateForm
 from .models import Stock, Category
 
 
