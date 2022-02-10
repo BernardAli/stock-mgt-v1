@@ -9,6 +9,7 @@
 {% block content %}
     <main class="container">
       <div class="bg-light p-5 rounded">
+          <div class="header">{{ title }}</div>
           <form action="" method="post">
             {% csrf_token %}
             {{form|crispy}}

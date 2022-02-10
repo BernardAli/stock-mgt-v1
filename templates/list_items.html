@@ -27,6 +27,9 @@
                     <th>CATEGORY</th>
                     <th>ITEM NAME</th>
                     <th>QUANTITY IN STORE</th>
+                    <th>ADDED ON</th>
+                    <th>LAST UPDATE</th>
+                    <th>DETAIL</th>
                     <th>DELETE</th>
                   </tr>
                 </thead>
@@ -36,6 +39,9 @@
                     <td>{{instance.category}}</td>
                     <td><a href="{% url 'update_items' instance.id %}">{{instance.item_name}}</a></td>
                     <td>{{instance.quantity}}</td>
+                    <td>{{instance.timestamp|date:"d M "}}</td>
+                    <td>{{instance.last_updated|date:"d M - h i a"}}</td>
+                      <td><a href="{% url 'stock_detail' instance.id %}"><i class="fas fa-info-circle"></i></a></td>
                       <td><a href="{% url 'delete_items' instance.id %}"><i class="fas fa-trash"></i></a></td>
                   </tr>
               {% endfor %}
