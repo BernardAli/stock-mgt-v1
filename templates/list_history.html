@@ -1,0 +1,53 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="header">{{title|upper}}</div>
+
+    <form method='POST' action=''>{% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" value='Search' class="btn btn-primary"/>
+    </form>
+    <br>
+
+    <div class="display_table">
+        <table class='table'>
+          <thead>
+            <tr>
+              <th>COUNT</th>
+              <th>ID</th>
+              <th>CATEGORY</th>
+              <th>ITEM NAME</th>
+              <th>QUANTITY IN STORE</th>
+              <th>ISSUE QUANTITY</th>
+              <th>RECEIVE QUANTITY</th>
+              <th>RECEIVE BY</th>
+              <th>ISSUE BY</th>
+              <th>LAST UPDATED</th>
+            </tr>
+          </thead>
+        {% for instance in queryset %}
+            <tr>
+
+              <td>{{forloop.counter}}</td>
+              <td>{{instance.id}}</td>
+              <td>{{instance.category}}</td>
+              <td>{{instance.item_name}}</td>
+              <td>{{instance.quantity}}</td>
+              <td>{{instance.issue_quantity}}</td>
+              <td>{{instance.receive_quantity}}</td>
+              <td>{{instance.receive_by}}</td>
+              <td>{{instance.issue_by}}</td>
+              <td>{{instance.last_updated}}</td>
+            </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+{% endblock %}

@@ -25,10 +25,12 @@ class StockCreateForm(forms.ModelForm):
 
 class StockSearchForm(forms.ModelForm):
     export_to_CSV = forms.BooleanField(required=False)
+    start_date = forms.DateTimeField(required=False)
+    end_date = forms.DateTimeField(required=False)
 
     class Meta:
         model = Stock
-        fields = ['category', 'item_name']
+        fields = ['category', 'item_name', 'start_date', 'end_date']
 
 
 class StockUpdateForm(forms.ModelForm):
@@ -40,13 +42,13 @@ class StockUpdateForm(forms.ModelForm):
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Stock
-        fields = ['issue_quantity', 'issue_to']
+        fields = ['issue_quantity']
 
 
 class ReceiveForm(forms.ModelForm):
     class Meta:
         model = Stock
-        fields = ['receive_quantity', 'receive_by']
+        fields = ['receive_quantity']
 
 
 class ReorderLevelForm(forms.ModelForm):

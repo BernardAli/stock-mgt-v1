@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 import csv
 
 from .forms import StockCreateForm, StockSearchForm, StockUpdateForm, IssueForm, ReceiveForm, ReorderLevelForm
-from .models import Stock
+from .models import Stock, StockHistory
 
 
 # Create your views here.
@@ -15,9 +16,10 @@ def home(request):
     context = {
         "title": title,
     }
-    return render(request, "index.html", context)
+    return redirect('list_items')
 
 
+@login_required
 def list_items(request):
     form = StockSearchForm(request.POST or None)
     title = 'Lists of list items'
@@ -28,9 +30,13 @@ def list_items(request):
         'queryset': queryset
     }
     if request.method == 'POST':
+        category = form['category'].value()
         queryset = Stock.objects.filter(  # category__icontains=form['category'].value(),
             item_name__icontains=form['item_name'].value()
         )
+        if category != '':
+            queryset = queryset.filter(category_id=category)
+
         if form['export_to_CSV'].value():
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="List of stock.csv"'
@@ -48,6 +54,7 @@ def list_items(request):
     return render(request, "list_items.html", context)
 
 
+@login_required
 def add_items(request):
     form = StockCreateForm(request.POST or None)
     if form.is_valid():
@@ -61,6 +68,7 @@ def add_items(request):
     return render(request, "add_items.html", context)
 
 
+@login_required
 def update_items(request, pk):
     queryset = Stock.objects.get(id=pk)
     form = StockUpdateForm(instance=queryset)
@@ -100,6 +108,7 @@ def issue_items(request, pk):
     form = IssueForm(request.POST or None, instance=queryset)
     if form.is_valid():
         instance = form.save(commit=False)
+        instance.receive_quantity = 0
         instance.quantity -= instance.issue_quantity
         instance.issue_by = str(request.user)
         messages.success(request, "Issued SUCCESSFULLY. " + str(instance.quantity) + " " + str(
@@ -123,7 +132,9 @@ def receive_items(request, pk):
     form = ReceiveForm(request.POST or None, instance=queryset)
     if form.is_valid():
         instance = form.save(commit=False)
+        instance.issue_quantity = 0
         instance.quantity += instance.receive_quantity
+        instance.receive_by = str(request.user)
         instance.save()
         messages.success(request, "Received SUCCESSFULLY. " + str(instance.quantity) + " " + str(
             instance.item_name) + "s now in Store")
@@ -154,3 +165,35 @@ def reorder_level(request, pk):
         "form": form,
     }
     return render(request, "add_items.html", context)
+
+
+@login_required
+def list_history(request):
+    header = 'LIST OF ITEMS'
+    queryset = StockHistory.objects.all()
+    form = StockSearchForm(request.POST or None)
+    context = {
+        "form": form,
+        "header": header,
+        "queryset": queryset,
+    }
+
+    if request.method == 'POST':
+        category = form['category'].value()
+        queryset = StockHistory.objects.filter(
+            item_name__icontains=form['item_name'].value(),
+            last_updated__range=[
+                form['start_date'].value(),
+                form['end_date'].value()
+            ]
+        )
+
+        if category != '':
+            queryset = queryset.filter(category_id=category)
+
+        context = {
+            "form": form,
+            "header": header,
+            "queryset": queryset,
+        }
+    return render(request, "list_history.html", context)

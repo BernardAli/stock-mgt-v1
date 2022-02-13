@@ -1,4 +1,4 @@
-{% extends 'partials/base.html' %}
+{% extends '_base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -7,14 +7,16 @@
 
 
 {% block content %}
-    <main class="container">
-      <div class="bg-light p-5 rounded">
           <div class="header">{{ title }}</div>
-          <form action="" method="post">
-            {% csrf_token %}
-            {{form|crispy}}
-            <input type="submit" value="Add" class="btn btn-primary">
-        </form>
-      </div>
-    </main>
+          <div class="row">
+              <div class="col-sm-7">
+                  <div class="display_table">
+                      <form action="" method="post">
+                        {% csrf_token %}
+                        {{form|crispy}}
+                        <input type="submit" value="Add" class="btn btn-primary">
+                      </form>
+                  </div>
+              </div>
+          </div>
 {% endblock %}

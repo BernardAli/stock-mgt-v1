@@ -1,0 +1,59 @@
+CREATE OR REPLACE FUNCTION stock_mgt_stock_update()
+RETURNS trigger AS
+$$
+BEGIN
+	IF new.issue_quantity = 0
+		THEN INSERT INTO stock_mgt_stockhistory(
+			id,
+			last_updated,
+			category_id,
+			item_name,
+			issue_quantity,
+			quantity,
+			receive_quantity,
+			receive_by)
+		VALUES(
+			new.id,
+			new.last_updated,
+			new.category_id,
+			new.item_name,
+			new.issue_quantity,
+			new.quantity,
+			new.receive_quantity,
+			new.receive_by);
+
+	ELSEIF new.receive_quantity = 0
+		THEN INSERT INTO stock_mgt_stockhistory(
+			id,
+			last_updated,
+			category_id,
+			item_name,
+			receive_quantity,
+			issue_quantity,
+			issue_to,
+			quantity,
+			issue_by)
+		VALUES(
+			new.id,
+			new.last_updated,
+			new.category_id,
+			new.item_name,
+			new.receive_quantity,
+			new.issue_quantity,
+			new.issue_to,
+			new.quantity,
+			new.issue_by);
+	END IF;
+	RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER after_stock_mgt_stock_update
+AFTER UPDATE
+ON stock_mgt_stock
+FOR EACH ROW
+EXECUTE PROCEDURE stock_mgt_stock_update();
+
+
