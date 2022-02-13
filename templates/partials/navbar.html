@@ -1,25 +1,58 @@
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">Stock Mgt V.0.1</a>
+    <a class="navbar-brand" href="{% url 'home' %}">Stock Mgt</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <a href="#"><div id="version-display" data-bs-toggle="modal" data-bs-target="#myModal">SMIS Ver: 1.0</div></a>
+    <div id="myModal" class="modal fade" role="dialog" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+              <div class="modal-content">
+
+                  <div class="modal-header">
+                      <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                      <h4 class="modal-title">System Information</h4>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+
+                  <div class="modal-body">
+                      <div class="dev-info">
+                        <p class=""><b>STOCK MANAGEMENT INFORMATION SYSTEMS</b></p>
+                        <p>VERSION: 1.O</p><br>
+
+                        <p class="modal-header">DEVELOPER:</p>
+                        <p>allgift technologies</p>
+                        <p>+233 244 314474</p>
+                        <p><img src="/static/img/tech_logo.svg" alt="Developer Logo"></p>
+                      </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                  </div>
+
+              </div>
+        </div>
+    </div>
+
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
         </li>
-        {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="/list_items">List Items</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/add_items">Add Items</a>
-          </li>
-          <li class="nav-item">
-           <a class="nav-link" href="/list_history">List History</a>
-          </li>
-        {% endif %}
+<!--        {% if request.user.is_authenticated %}-->
+<!--          <li class="nav-item">-->
+<!--            <a class="nav-link" href="/list_items">List Items</a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a class="nav-link" href="/add_items">Add Items</a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--           <a class="nav-link" href="/list_history">List History</a>-->
+<!--          </li>-->
+<!--        {% endif %}-->
       </ul>
       <ul class="navbar-nav">
         {% if request.user.is_authenticated %}

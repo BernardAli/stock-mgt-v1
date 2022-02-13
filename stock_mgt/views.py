@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 import csv
 
-from .forms import StockCreateForm, StockSearchForm, StockUpdateForm, IssueForm, ReceiveForm, ReorderLevelForm
+from .forms import StockCreateForm, StockSearchForm, StockUpdateForm, IssueForm, ReceiveForm, ReorderLevelForm, \
+    CategoryCreateForm
 from .models import Stock, StockHistory
 
 
@@ -32,7 +34,11 @@ def list_items(request):
     if request.method == 'POST':
         category = form['category'].value()
         queryset = Stock.objects.filter(  # category__icontains=form['category'].value(),
-            item_name__icontains=form['item_name'].value()
+            item_name__icontains=form['item_name'].value(),
+            last_updated__range=[
+                form['start_date'].value(),
+                form['end_date'].value()
+            ]
         )
         if category != '':
             queryset = queryset.filter(category_id=category)
@@ -171,6 +177,10 @@ def reorder_level(request, pk):
 def list_history(request):
     header = 'LIST OF ITEMS'
     queryset = StockHistory.objects.all()
+    paginator = Paginator(queryset, 15)
+    page_number = request.GET.get('page')
+    queryset = paginator.get_page(page_number)
+
     form = StockSearchForm(request.POST or None)
     context = {
         "form": form,
@@ -191,9 +201,26 @@ def list_history(request):
         if category != '':
             queryset = queryset.filter(category_id=category)
 
+        paginator = Paginator(queryset, 15)
+        page_number = request.GET.get('page')
+        queryset = paginator.get_page(page_number)
+
         context = {
             "form": form,
             "header": header,
             "queryset": queryset,
         }
     return render(request, "list_history.html", context)
+
+
+def add_category(request):
+    form = CategoryCreateForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Successfully Created')
+        return redirect('/list_items')
+    context = {
+        "form": form,
+        "title": "Add Category",
+    }
+    return render(request, "add_items.html", context)

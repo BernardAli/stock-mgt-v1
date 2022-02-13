@@ -10,44 +10,66 @@
 {% block content %}
     <div class="header">{{title|upper}}</div>
 
-    <form method='POST' action=''>{% csrf_token %}
-        {{form|crispy}}
-        <input type="submit" value='Search' class="btn btn-primary"/>
-    </form>
-    <br>
+    <div class="row">
+        <div class="col-sm-2">
+            <form method='POST' action=''>{% csrf_token %}
+                {{form|crispy}}
+                <input type="submit" value='Search' class="btn btn-primary mybutton"/>
+            </form>
+        </div>
+        <br>
 
-    <div class="display_table">
-        <table class='table'>
-          <thead>
-            <tr>
-              <th>COUNT</th>
-              <th>ID</th>
-              <th>CATEGORY</th>
-              <th>ITEM NAME</th>
-              <th>QUANTITY IN STORE</th>
-              <th>ISSUE QUANTITY</th>
-              <th>RECEIVE QUANTITY</th>
-              <th>RECEIVE BY</th>
-              <th>ISSUE BY</th>
-              <th>LAST UPDATED</th>
-            </tr>
-          </thead>
-        {% for instance in queryset %}
-            <tr>
+        <div class="col-sm-10">
+            <div class="display_table">
+            <table class='table'>
+              <thead>
+                <tr>
+                  <th>COUNT</th>
+                  <th>CATEGORY</th>
+                  <th>ITEM NAME</th>
+                  <th>QUANTITY IN STORE</th>
+                  <th>ISSUE QUANTITY</th>
+                  <th>RECEIVE QUANTITY</th>
+                  <th>RECEIVE BY</th>
+                  <th>ISSUE BY</th>
+                  <th>LAST UPDATED</th>
+                </tr>
+              </thead>
+            {% for instance in queryset %}
+                <tr>
 
-              <td>{{forloop.counter}}</td>
-              <td>{{instance.id}}</td>
-              <td>{{instance.category}}</td>
-              <td>{{instance.item_name}}</td>
-              <td>{{instance.quantity}}</td>
-              <td>{{instance.issue_quantity}}</td>
-              <td>{{instance.receive_quantity}}</td>
-              <td>{{instance.receive_by}}</td>
-              <td>{{instance.issue_by}}</td>
-              <td>{{instance.last_updated}}</td>
-            </tr>
-        {% endfor %}
-      </table>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{instance.category}}</td>
+                  <td>{{instance.item_name}}</td>
+                  <td>{{instance.quantity}}</td>
+                  <td>{{instance.issue_quantity}}</td>
+                  <td>{{instance.receive_quantity}}</td>
+                  <td>{{instance.receive_by}}</td>
+                  <td>{{instance.issue_by}}</td>
+                  <td>{{instance.last_updated|date:"D d M Y" }}</td>
+                </tr>
+            {% endfor %}
+          </table>
+                <br>
+                <div class="pagination">
+                <span class="step-links">
+                    {% if queryset.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ queryset.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ queryset.number }} of {{ queryset.paginator.num_pages }}.
+                    </span>
+
+                    {% if queryset.has_next %}
+                        <a href="?page={{ queryset.next_page_number }}">next</a>
+                        <a href="?page={{ queryset.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        </div>
     </div>
 
 {% endblock %}

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Stock
+
+from .models import Stock, Category
 
 
 class StockCreateForm(forms.ModelForm):
@@ -25,8 +26,8 @@ class StockCreateForm(forms.ModelForm):
 
 class StockSearchForm(forms.ModelForm):
     export_to_CSV = forms.BooleanField(required=False)
-    start_date = forms.DateTimeField(required=False)
-    end_date = forms.DateTimeField(required=False)
+    start_date = forms.DateTimeField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=False)
+    end_date = forms.DateTimeField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=False)
 
     class Meta:
         model = Stock
@@ -55,3 +56,9 @@ class ReorderLevelForm(forms.ModelForm):
     class Meta:
         model = Stock
         fields = ['reorder_level']
+
+
+class CategoryCreateForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
